@@ -37,74 +37,32 @@ body{
   min-height:100vh;
   overflow-x:hidden;
 }
-
-/* ── DIGITAL RAIN CANVAS ── */
-#rain{
-  position:fixed;inset:0;
-  pointer-events:none;
-  z-index:0;
-  opacity:0.18;
-}
-
-/* scanlines */
+#rain{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.18;}
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
-  background:repeating-linear-gradient(
-    0deg,transparent,transparent 2px,
-    rgba(0,255,80,0.015) 2px,rgba(0,255,80,0.015) 4px
-  );
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,80,0.015) 2px,rgba(0,255,80,0.015) 4px);
 }
-
-/* grid */
 .grid-bg{
   position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:
-    linear-gradient(rgba(0,255,80,0.028) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,80,0.028) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(0,255,80,0.028) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,80,0.028) 1px,transparent 1px);
   background-size:44px 44px;
 }
-
-/* deep radial */
 .radial{
   position:fixed;top:-20%;left:50%;transform:translateX(-50%);
   width:900px;height:900px;pointer-events:none;z-index:0;
-  background:radial-gradient(
-    ellipse 60% 55% at 50% 0%,
-    rgba(0,255,80,0.07) 0%,
-    rgba(0,232,255,0.03) 40%,
-    transparent 70%
-  );
+  background:radial-gradient(ellipse 60% 55% at 50% 0%,rgba(0,255,80,0.07) 0%,rgba(0,232,255,0.03) 40%,transparent 70%);
   animation:rpulse 7s ease-in-out infinite;
 }
-@keyframes rpulse{
-  0%,100%{opacity:.7;transform:translateX(-50%) scale(1);}
-  50%{opacity:1;transform:translateX(-50%) scale(1.08);}
-}
-
-/* corner flares */
-.flare{
-  position:fixed;pointer-events:none;z-index:0;
-  width:300px;height:300px;border-radius:50%;
-  filter:blur(80px);
-}
+@keyframes rpulse{0%,100%{opacity:.7;transform:translateX(-50%) scale(1);}50%{opacity:1;transform:translateX(-50%) scale(1.08);}}
+.flare{position:fixed;pointer-events:none;z-index:0;width:300px;height:300px;border-radius:50%;filter:blur(80px);}
 .flare.tl{top:-80px;left:-80px;background:rgba(0,255,80,0.06);}
 .flare.br{bottom:-80px;right:-80px;background:rgba(0,232,255,0.05);}
-
-/* ── WRAP ── */
-.wrap{
-  position:relative;z-index:1;
-  max-width:490px;margin:0 auto;
-  padding:36px 18px 80px;
-}
-
-/* ── HEADER ── */
+.wrap{position:relative;z-index:1;max-width:490px;margin:0 auto;padding:36px 18px 80px;}
 header{text-align:center;margin-bottom:36px;animation:fd .55s ease both;}
 @keyframes fd{from{opacity:0;transform:translateY(-14px);}to{opacity:1;transform:translateY(0);}}
-
 .logo{display:inline-flex;align-items:center;gap:14px;margin-bottom:8px;}
 .hex{
-  width:50px;height:50px;
-  border:2px solid var(--accent);border-radius:14px;
+  width:50px;height:50px;border:2px solid var(--accent);border-radius:14px;
   display:flex;align-items:center;justify-content:center;font-size:24px;
   background:rgba(0,255,80,0.04);
   box-shadow:0 0 22px var(--glow),0 0 6px var(--glow),inset 0 0 20px rgba(0,255,80,0.04);
@@ -112,10 +70,8 @@ header{text-align:center;margin-bottom:36px;animation:fd .55s ease both;}
 }
 @keyframes hexflick{
   0%,91%,100%{box-shadow:0 0 22px var(--glow),inset 0 0 20px rgba(0,255,80,0.04);}
-  92%{box-shadow:0 0 5px var(--glow);}
-  93%{box-shadow:0 0 22px var(--glow),inset 0 0 20px rgba(0,255,80,0.04);}
-  96%{box-shadow:0 0 3px var(--glow);}
-  97%{box-shadow:0 0 22px var(--glow),inset 0 0 20px rgba(0,255,80,0.04);}
+  92%{box-shadow:0 0 5px var(--glow);}93%{box-shadow:0 0 22px var(--glow),inset 0 0 20px rgba(0,255,80,0.04);}
+  96%{box-shadow:0 0 3px var(--glow);}97%{box-shadow:0 0 22px var(--glow),inset 0 0 20px rgba(0,255,80,0.04);}
 }
 h1{
   font-family:var(--mono);font-size:2.4rem;font-weight:700;letter-spacing:.12em;
@@ -123,311 +79,122 @@ h1{
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   filter:drop-shadow(0 0 16px rgba(0,255,80,0.5));
 }
-.sub{
-  font-family:var(--mono);font-size:.6rem;
-  color:var(--muted);letter-spacing:.2em;
-  text-transform:uppercase;margin-top:5px;
-}
+.sub{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:5px;}
 .chain-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  margin-top:10px;padding:4px 12px;
-  border:1px solid rgba(0,232,255,0.22);border-radius:20px;
-  background:rgba(0,232,255,0.04);
-  font-family:var(--mono);font-size:.57rem;
-  color:var(--accent2);letter-spacing:.1em;
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:4px 12px;
+  border:1px solid rgba(0,232,255,0.22);border-radius:20px;background:rgba(0,232,255,0.04);
+  font-family:var(--mono);font-size:.57rem;color:var(--accent2);letter-spacing:.1em;
 }
-.chain-dot{width:5px;height:5px;border-radius:50%;background:var(--accent2);
-  box-shadow:0 0 6px var(--accent2);animation:blink 1.4s ease-in-out infinite;}
-
-/* ── LIVE STATS ── */
-.stats{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  margin-bottom:16px;animation:fu .5s .08s ease both;
-}
+.chain-dot{width:5px;height:5px;border-radius:50%;background:var(--accent2);box-shadow:0 0 6px var(--accent2);animation:blink 1.4s ease-in-out infinite;}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;animation:fu .5s .08s ease both;}
 @keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-
 .scard{
-  background:var(--surface);
-  border:1px solid var(--border);border-radius:14px;
-  padding:16px 18px;backdrop-filter:blur(18px);
-  position:relative;overflow:hidden;
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:16px 18px;backdrop-filter:blur(18px);position:relative;overflow:hidden;
   transition:border-color .2s,box-shadow .2s;
 }
 .scard:hover{border-color:var(--border-hi);box-shadow:0 0 20px var(--glow);}
-.scard::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5;
-}
-.scard:nth-child(2)::before{
-  background:linear-gradient(90deg,transparent,var(--accent2),transparent);
-}
-.slabel{
-  font-family:var(--mono);font-size:.57rem;
-  color:var(--muted);text-transform:uppercase;
-  letter-spacing:.13em;margin-bottom:7px;
-  display:flex;align-items:center;gap:5px;
-}
-.sval{
-  font-family:var(--mono);font-size:1rem;font-weight:700;
-  color:var(--accent);text-shadow:0 0 12px var(--glow);
-}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5;}
+.scard:nth-child(2)::before{background:linear-gradient(90deg,transparent,var(--accent2),transparent);}
+.slabel{font-family:var(--mono);font-size:.57rem;color:var(--muted);text-transform:uppercase;letter-spacing:.13em;margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.sval{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--accent);text-shadow:0 0 12px var(--glow);}
 .scard:nth-child(2) .sval{color:var(--accent2);text-shadow:0 0 12px var(--glow2);}
 .sval .unit{font-size:.6rem;color:var(--muted);margin-left:3px;-webkit-text-fill-color:initial;}
-
-.pulse-dot{
-  display:inline-block;width:6px;height:6px;border-radius:50%;
-  background:var(--accent);box-shadow:0 0 8px var(--accent);
-  animation:blink 1.4s ease-in-out infinite;
-}
+.pulse-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:blink 1.4s ease-in-out infinite;}
 .scard:nth-child(2) .pulse-dot{background:var(--accent2);box-shadow:0 0 8px var(--accent2);}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.15;}}
-
-.refresh-time{
-  font-family:var(--mono);font-size:.54rem;
-  color:var(--muted);text-align:right;
-  margin-bottom:14px;letter-spacing:.04em;
-  opacity:.7;
-}
-
-/* ── CONNECT ── */
+.refresh-time{font-family:var(--mono);font-size:.54rem;color:var(--muted);text-align:right;margin-bottom:14px;letter-spacing:.04em;opacity:.7;}
 .cbtn{
-  width:100%;padding:15px;
-  background:transparent;
-  border:1px solid var(--accent);border-radius:13px;
-  color:var(--accent);font-family:var(--mono);
-  font-size:.8rem;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;
-  cursor:pointer;margin-bottom:18px;
-  transition:all .22s;
-  box-shadow:0 0 16px var(--glow),inset 0 0 16px rgba(0,255,80,.025);
-  animation:fu .5s .18s ease both;
-  position:relative;overflow:hidden;
+  width:100%;padding:15px;background:transparent;border:1px solid var(--accent);border-radius:13px;
+  color:var(--accent);font-family:var(--mono);font-size:.8rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;margin-bottom:18px;
+  transition:all .22s;box-shadow:0 0 16px var(--glow),inset 0 0 16px rgba(0,255,80,.025);
+  animation:fu .5s .18s ease both;position:relative;overflow:hidden;
 }
-.cbtn::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,255,80,.07) 0%,rgba(0,232,255,.04) 100%);
-  opacity:0;transition:opacity .2s;
-}
+.cbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,80,.07) 0%,rgba(0,232,255,.04) 100%);opacity:0;transition:opacity .2s;}
 .cbtn:hover::after{opacity:1;}
 .cbtn:hover{box-shadow:0 0 30px var(--glow-hi);transform:translateY(-1px);}
 .cbtn:disabled{opacity:.32;cursor:not-allowed;transform:none;}
-
-/* wallet bar */
 .wbar{
-  background:var(--surface2);
-  border:1px solid rgba(0,232,255,0.2);
-  border-radius:12px;padding:11px 16px;
-  margin-bottom:18px;display:none;
-  align-items:center;justify-content:space-between;
-  backdrop-filter:blur(18px);
+  background:var(--surface2);border:1px solid rgba(0,232,255,0.2);border-radius:12px;
+  padding:11px 16px;margin-bottom:18px;display:none;
+  align-items:center;justify-content:space-between;backdrop-filter:blur(18px);
   box-shadow:0 0 18px rgba(0,232,255,0.07);
 }
 .wbar.on{display:flex;}
 .wadr{font-family:var(--mono);font-size:.74rem;color:var(--accent2);}
 .wbal{font-family:var(--mono);font-size:.7rem;color:var(--muted2);}
-
-/* network badge */
-.netbadge{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:3px 8px;border-radius:5px;
-  background:rgba(0,255,80,0.08);
-  border:1px solid rgba(0,255,80,0.2);
-  font-family:var(--mono);font-size:.54rem;
-  color:var(--accent);margin-left:8px;
-}
-
-/* ── CARD ── */
+.netbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:5px;background:rgba(0,255,80,0.08);border:1px solid rgba(0,255,80,0.2);font-family:var(--mono);font-size:.54rem;color:var(--accent);margin-left:8px;}
 .card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:18px;overflow:hidden;
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;
   backdrop-filter:blur(22px);
-  box-shadow:
-    0 0 60px rgba(0,255,80,0.04),
-    0 24px 60px rgba(0,0,0,.75),
-    inset 0 1px 0 rgba(0,255,80,0.08);
+  box-shadow:0 0 60px rgba(0,255,80,0.04),0 24px 60px rgba(0,0,0,.75),inset 0 1px 0 rgba(0,255,80,0.08);
   animation:fu .5s .26s ease both;
 }
-.tabs{
-  display:grid;grid-template-columns:1fr 1fr;
-  border-bottom:1px solid var(--border);
-}
+.tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
 .tab{
-  padding:16px;text-align:center;
-  font-family:var(--mono);font-size:.74rem;font-weight:700;
-  letter-spacing:.09em;text-transform:uppercase;
-  cursor:pointer;color:var(--muted);
-  transition:all .2s;border:none;background:none;
-  position:relative;
+  padding:16px;text-align:center;font-family:var(--mono);font-size:.74rem;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;cursor:pointer;color:var(--muted);
+  transition:all .2s;border:none;background:none;position:relative;
 }
-.tab.on{
-  color:var(--accent);
-  background:linear-gradient(180deg,rgba(0,255,80,0.06) 0%,transparent 100%);
-  text-shadow:0 0 10px var(--glow);
-}
-.tab.on::after{
-  content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);
-  box-shadow:0 0 8px var(--glow);
-}
+.tab.on{color:var(--accent);background:linear-gradient(180deg,rgba(0,255,80,0.06) 0%,transparent 100%);text-shadow:0 0 10px var(--glow);}
+.tab.on::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);box-shadow:0 0 8px var(--glow);}
 .tab:not(.on):hover{color:rgba(0,255,80,.7);}
-
 .fbody{padding:24px;}
-
-/* balance chip */
 .bchip{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:16px;padding:12px 15px;
-  background:rgba(0,255,80,.03);
-  border:1px solid var(--border);border-radius:10px;
-  position:relative;overflow:hidden;
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;
+  padding:12px 15px;background:rgba(0,255,80,.03);border:1px solid var(--border);
+  border-radius:10px;position:relative;overflow:hidden;
 }
-.bchip::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:linear-gradient(180deg,transparent,var(--accent),transparent);
-}
-.bchip .lbl{
-  font-family:var(--mono);font-size:.57rem;
-  color:var(--muted);text-transform:uppercase;letter-spacing:.12em;
-}
-.bchip .val{
-  font-family:var(--mono);font-size:.82rem;
-  color:var(--accent);font-weight:700;
-}
-
-/* input */
-.ilabel{
-  font-family:var(--mono);font-size:.57rem;
-  color:var(--muted);text-transform:uppercase;
-  letter-spacing:.14em;margin-bottom:8px;display:block;
-}
+.bchip::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,var(--accent),transparent);}
+.bchip .lbl{font-family:var(--mono);font-size:.57rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;}
+.bchip .val{font-family:var(--mono);font-size:.82rem;color:var(--accent);font-weight:700;}
+.ilabel{font-family:var(--mono);font-size:.57rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px;display:block;}
 .irow{
-  display:flex;align-items:center;
-  background:rgba(0,0,0,.6);
-  border:1px solid var(--border);border-radius:11px;
-  overflow:hidden;margin-bottom:16px;
-  transition:border-color .2s,box-shadow .2s;
+  display:flex;align-items:center;background:rgba(0,0,0,.6);border:1px solid var(--border);
+  border-radius:11px;overflow:hidden;margin-bottom:16px;transition:border-color .2s,box-shadow .2s;
 }
-.irow:focus-within{
-  border-color:var(--accent);
-  box-shadow:0 0 18px var(--glow),inset 0 0 8px rgba(0,255,80,.04);
-}
-.ainput{
-  flex:1;background:none;border:none;outline:none;
-  padding:14px 15px;
-  font-family:var(--mono);font-size:1.05rem;
-  color:var(--accent);caret-color:var(--accent);
-}
+.irow:focus-within{border-color:var(--accent);box-shadow:0 0 18px var(--glow),inset 0 0 8px rgba(0,255,80,.04);}
+.ainput{flex:1;background:none;border:none;outline:none;padding:14px 15px;font-family:var(--mono);font-size:1.05rem;color:var(--accent);caret-color:var(--accent);}
 .ainput::placeholder{color:rgba(0,255,80,.16);}
-.maxbtn{
-  background:none;border:none;
-  color:var(--accent3);font-family:var(--mono);
-  font-size:.6rem;cursor:pointer;
-  padding:4px 10px;border-radius:5px;
-  transition:background .2s;
-  text-transform:uppercase;letter-spacing:.08em;
-  border-left:1px solid var(--border);
-}
+.maxbtn{background:none;border:none;color:var(--accent3);font-family:var(--mono);font-size:.6rem;cursor:pointer;padding:4px 10px;border-radius:5px;transition:background .2s;text-transform:uppercase;letter-spacing:.08em;border-left:1px solid var(--border);}
 .maxbtn:hover{background:rgba(170,255,0,0.1);}
-.ibadge{
-  padding:8px 14px;font-family:var(--mono);
-  font-size:.7rem;color:var(--muted2);
-  border-left:1px solid var(--border);
-  background:rgba(0,232,255,0.04);
-}
-
-/* action btn */
+.ibadge{padding:8px 14px;font-family:var(--mono);font-size:.7rem;color:var(--muted2);border-left:1px solid var(--border);background:rgba(0,232,255,0.04);}
 .abtn{
-  width:100%;padding:16px;
-  background:transparent;
-  border:1px solid var(--accent);border-radius:11px;
-  color:var(--accent);font-family:var(--mono);
-  font-size:.8rem;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;
-  cursor:pointer;transition:all .22s;
-  box-shadow:0 0 14px var(--glow),inset 0 0 14px rgba(0,255,80,.02);
-  position:relative;overflow:hidden;
+  width:100%;padding:16px;background:transparent;border:1px solid var(--accent);border-radius:11px;
+  color:var(--accent);font-family:var(--mono);font-size:.8rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .22s;
+  box-shadow:0 0 14px var(--glow),inset 0 0 14px rgba(0,255,80,.02);position:relative;overflow:hidden;
 }
-.abtn::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent 0%,rgba(0,255,80,.06) 50%,transparent 100%);
-  transform:translateX(-100%);transition:transform .4s;
-}
+.abtn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(0,255,80,.06) 50%,transparent 100%);transform:translateX(-100%);transition:transform .4s;}
 .abtn:hover:not(:disabled)::before{transform:translateX(100%);}
-.abtn:hover:not(:disabled){
-  background:rgba(0,255,80,.07);
-  box-shadow:0 0 28px var(--glow-hi);
-  transform:translateY(-1px);
-}
+.abtn:hover:not(:disabled){background:rgba(0,255,80,.07);box-shadow:0 0 28px var(--glow-hi);transform:translateY(-1px);}
 .abtn:disabled{opacity:.25;cursor:not-allowed;box-shadow:none;}
-
-/* divider */
-.divider{
-  display:flex;align-items:center;gap:10px;
-  margin:16px 0;font-family:var(--mono);
-  font-size:.55rem;color:var(--muted);letter-spacing:.1em;
-}
-.divider::before,.divider::after{
-  content:'';flex:1;height:1px;
-  background:linear-gradient(90deg,transparent,var(--border),transparent);
-}
-
-/* rate display */
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;font-family:var(--mono);font-size:.55rem;color:var(--muted);letter-spacing:.1em;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
 .rate-row{
-  display:flex;justify-content:center;align-items:center;
-  gap:8px;padding:9px 14px;
-  background:rgba(0,255,80,.025);
-  border:1px solid var(--border);border-radius:8px;
-  margin-bottom:16px;
-  font-family:var(--mono);font-size:.64rem;
-  color:var(--muted);letter-spacing:.06em;
+  display:flex;justify-content:center;align-items:center;gap:8px;padding:9px 14px;
+  background:rgba(0,255,80,.025);border:1px solid var(--border);border-radius:8px;
+  margin-bottom:16px;font-family:var(--mono);font-size:.64rem;color:var(--muted);letter-spacing:.06em;
 }
 .rate-hi{color:var(--accent3);}
-
-/* toast */
 .toast{
-  position:fixed;bottom:26px;left:50%;
-  transform:translateX(-50%) translateY(80px);
-  background:rgba(0,10,4,.97);
-  border:1px solid var(--border);border-radius:10px;
-  padding:12px 22px;font-family:var(--mono);
-  font-size:.72rem;color:var(--text);
-  z-index:10000;
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
-  max-width:90vw;text-align:center;
-  backdrop-filter:blur(20px);
-  box-shadow:0 0 30px rgba(0,0,0,.8);
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:rgba(0,10,4,.97);border:1px solid var(--border);border-radius:10px;
+  padding:12px 22px;font-family:var(--mono);font-size:.72rem;color:var(--text);
+  z-index:10000;transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  max-width:90vw;text-align:center;backdrop-filter:blur(20px);box-shadow:0 0 30px rgba(0,0,0,.8);
 }
 .toast.on{transform:translateX(-50%) translateY(0);}
 .toast.ok{border-color:var(--accent);color:var(--accent);box-shadow:0 0 22px var(--glow);}
 .toast.er{border-color:var(--err);color:var(--err);box-shadow:0 0 22px rgba(255,68,102,.3);}
 .toast.wa{border-color:var(--warn);color:var(--warn);}
-
-footer{
-  text-align:center;margin-top:28px;
-  font-family:var(--mono);font-size:.57rem;
-  color:var(--muted);line-height:2.2;
-  animation:fu .5s .34s ease both;
-}
+footer{text-align:center;margin-top:28px;font-family:var(--mono);font-size:.57rem;color:var(--muted);line-height:2.2;animation:fu .5s .34s ease both;}
 footer a{color:var(--accent2);text-decoration:none;}
 footer a:hover{text-shadow:0 0 8px var(--glow2);}
-
-.spin{
-  display:inline-block;width:11px;height:11px;
-  border:2px solid rgba(0,255,80,.15);
-  border-top-color:var(--accent);border-radius:50%;
-  animation:sp .6s linear infinite;
-  vertical-align:middle;margin-right:7px;
-}
+.spin{display:inline-block;width:11px;height:11px;border:2px solid rgba(0,255,80,.15);border-top-color:var(--accent);border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:7px;}
 @keyframes sp{to{transform:rotate(360deg);}}
-
-/* help text */
-.hint{
-  font-family:var(--mono);font-size:.58rem;
-  color:var(--muted);margin-top:10px;
-  text-align:center;letter-spacing:.04em;
-  opacity:.65;
-}
+.hint{font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:10px;text-align:center;letter-spacing:.04em;opacity:.65;}
 </style>
 </head>
 <body>
@@ -450,7 +217,6 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
     </div>
   </header>
 
-  <!-- LIVE STATS -->
   <div class="stats">
     <div class="scard">
       <div class="slabel"><span class="pulse-dot"></span>Total Supply</div>
@@ -463,10 +229,8 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
   </div>
   <div class="refresh-time" id="lastUpdate">Fetching live data…</div>
 
-  <!-- CONNECT -->
   <button class="cbtn" id="cbtn" onclick="connectWallet()">[ Connect Wallet ]</button>
 
-  <!-- WALLET BAR -->
   <div class="wbar" id="wbar">
     <div style="display:flex;align-items:center;gap:9px;">
       <span class="pulse-dot" style="background:var(--accent2);box-shadow:0 0 8px var(--accent2);"></span>
@@ -476,15 +240,12 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
     <span class="wbal" id="wbal">— MON</span>
   </div>
 
-  <!-- CARD -->
   <div class="card">
     <div class="tabs">
       <button class="tab on" id="t0" onclick="switchTab(0)">↓ Wrap MON</button>
       <button class="tab"    id="t1" onclick="switchTab(1)">↑ Unwrap WMON</button>
     </div>
     <div class="fbody">
-
-      <!-- WRAP PANEL -->
       <div id="p0">
         <div class="bchip">
           <span class="lbl">MON Balance</span>
@@ -505,7 +266,6 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
         <p class="hint">Deposits are instant · gas ~0.01 MON reserved</p>
       </div>
 
-      <!-- UNWRAP PANEL -->
       <div id="p1" style="display:none">
         <div class="bchip">
           <span class="lbl">WMON Balance</span>
@@ -525,7 +285,6 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
         <button class="abtn" id="wBtn" onclick="doWithdraw()" disabled>Unwrap WMON → MON</button>
         <p class="hint">Withdrawals are instant · no fee</p>
       </div>
-
     </div>
   </div>
 
@@ -538,23 +297,14 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ═══════════════════════════════════════
-   DIGITAL RAIN
-═══════════════════════════════════════ */
+/* ── DIGITAL RAIN ── */
 (function initRain() {
   const canvas = document.getElementById('rain');
   const ctx = canvas.getContext('2d');
-
   const CHARS = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ日月火水木金土零一二三四五六七八九';
   const FONT_SIZE = 13;
   let cols, drops;
-
-  const COLORS = [
-    '#00ff50','#00ff50','#00ff50',  // dominant green (weight 3)
-    '#00e8ff',                       // cyan accent
-    '#aaff00',                       // lime accent
-    '#00ff50',                       // green again
-  ];
+  const COLORS = ['#00ff50','#00ff50','#00ff50','#00e8ff','#aaff00','#00ff50'];
 
   function resize() {
     canvas.width  = window.innerWidth;
@@ -562,62 +312,47 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
     cols  = Math.floor(canvas.width / FONT_SIZE);
     drops = Array(cols).fill(0).map(() => Math.random() * -100);
   }
-
   function draw() {
     ctx.fillStyle = 'rgba(1,11,3,0.055)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     ctx.font = FONT_SIZE + 'px "Space Mono", monospace';
-
     for (let i = 0; i < cols; i++) {
-      const ch    = CHARS[Math.floor(Math.random() * CHARS.length)];
-      const x     = i * FONT_SIZE;
-      const y     = drops[i] * FONT_SIZE;
+      const ch = CHARS[Math.floor(Math.random() * CHARS.length)];
+      const x  = i * FONT_SIZE;
+      const y  = drops[i] * FONT_SIZE;
       const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-
-      // head glyph — bright white-green
       if (drops[i] > 1) {
         ctx.fillStyle = '#ccffdd';
-        ctx.shadowColor = '#00ff50';
-        ctx.shadowBlur  = 8;
-        ctx.fillText(ch, x, y);
-        ctx.shadowBlur = 0;
+        ctx.shadowColor = '#00ff50'; ctx.shadowBlur = 8;
+        ctx.fillText(ch, x, y); ctx.shadowBlur = 0;
       }
-
-      // body
       ctx.fillStyle = color;
       ctx.fillText(ch, x, y - FONT_SIZE);
-
-      if (y > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
+      if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
       drops[i] += 0.38 + Math.random() * 0.22;
     }
   }
-
   resize();
   window.addEventListener('resize', resize);
   setInterval(draw, 40);
 })();
 
-/* ═══════════════════════════════════════
-   CONFIG
-═══════════════════════════════════════ */
-const CONTRACT   = "0x2cE8C8F4961a54B2e87585f4178467006B76B418";
+/* ── CONFIG ── */
+const CONTRACT  = "0x2cE8C8F4961a54B2e87585f4178467006B76B418";
 const ABI = [
   "function deposit() payable",
   "function withdraw(uint256 wad)",
   "function balanceOf(address) view returns (uint256)",
   "function totalSupply() view returns (uint256)",
 ];
-const MONAD_ID   = 143n;
-const MONAD_HEX  = "0x8f";
+const MONAD_ID  = 143n;
+const MONAD_HEX = "0x8f";
 const REFRESH_MS = 8000;
 
+// ✅ Removed Alchemy (CORS/429). Only use reliable public RPCs.
 const READ_RPCS = [
   "https://monad-mainnet.drpc.org",
   "https://rpc.monad.xyz",
-  "https://monad-mainnet.g.alchemy.com/v2/demo",
 ];
 
 const MONAD_CHAIN_PARAMS = {
@@ -628,16 +363,12 @@ const MONAD_CHAIN_PARAMS = {
   blockExplorerUrls: ["https://monadscan.com"],
 };
 
-/* ═══════════════════════════════════════
-   STATE
-═══════════════════════════════════════ */
+/* ── STATE ── */
 let provider, signer, contract, userAddress;
 let monBal = 0n, wmonBal = 0n;
 let refreshTimer = null;
 
-/* ═══════════════════════════════════════
-   RPC READS
-═══════════════════════════════════════ */
+/* ── RPC READS ── */
 async function rpcCall(method, params) {
   for (const rpc of READ_RPCS) {
     try {
@@ -645,7 +376,7 @@ async function rpcCall(method, params) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jsonrpc:"2.0", method, params, id:1 }),
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(6000),
       });
       const d = await res.json();
       if (d.result !== undefined) return d.result;
@@ -655,18 +386,15 @@ async function rpcCall(method, params) {
 }
 
 async function fetchTotalSupply() {
-  // eth_getBalance of the WMON contract = its ETH holdings = totalSupply
   const r = await rpcCall("eth_getBalance", [CONTRACT, "latest"]);
   return r ? BigInt(r) : null;
 }
 
 async function fetchUserWMON() {
   if (!userAddress) return null;
-  // Try via connected wallet provider first (no RPC restriction)
   if (contract) {
     try { return await contract.balanceOf(userAddress); } catch (_) {}
   }
-  // Fallback: raw eth_call
   const iface = new ethers.Interface(ABI);
   const data  = iface.encodeFunctionData("balanceOf", [userAddress]);
   const r     = await rpcCall("eth_call", [{ to: CONTRACT, data }, "latest"]);
@@ -674,16 +402,12 @@ async function fetchUserWMON() {
   return BigInt(r);
 }
 
-/* ═══════════════════════════════════════
-   LIVE REFRESH
-═══════════════════════════════════════ */
+/* ── LIVE REFRESH ── */
 async function refreshStats() {
-  // Total supply
   const supply = await fetchTotalSupply();
   const el = document.getElementById("statSupply");
   if (supply !== null) {
-    el.innerHTML = parseFloat(ethers.formatEther(supply)).toFixed(4)
-      + '<span class="unit"> WMON</span>';
+    el.innerHTML = parseFloat(ethers.formatEther(supply)).toFixed(4) + '<span class="unit"> WMON</span>';
   } else {
     el.innerHTML = 'RPC err<span class="unit"></span>';
   }
@@ -701,8 +425,7 @@ async function refreshStats() {
       wmonBal = ub;
       const wf = parseFloat(ethers.formatEther(wmonBal)).toFixed(4);
       document.getElementById("wmonBal").textContent = wf + " WMON";
-      document.getElementById("statUser").innerHTML  =
-        wf + '<span class="unit"> WMON</span>';
+      document.getElementById("statUser").innerHTML  = wf + '<span class="unit"> WMON</span>';
     }
   }
 
@@ -717,9 +440,7 @@ function startRefresh() {
   refreshTimer = setInterval(refreshStats, REFRESH_MS);
 }
 
-/* ═══════════════════════════════════════
-   WALLET CONNECTION  (fixed)
-═══════════════════════════════════════ */
+/* ── WALLET CONNECTION ── */
 async function connectWallet() {
   if (!window.ethereum) {
     toast("MetaMask not detected — please install it first", "er");
@@ -731,58 +452,59 @@ async function connectWallet() {
   btn.disabled  = true;
 
   try {
-    // 1. Request accounts
+    // 1. Request accounts first
     await window.ethereum.request({ method: "eth_requestAccounts" });
 
-    // 2. Build provider AFTER accounts are unlocked
+    // 2. Build provider
     provider = new ethers.BrowserProvider(window.ethereum);
     const net = await provider.getNetwork();
 
-    // 3. Switch / add chain if necessary
+    // 3. Switch/add chain if needed
     if (net.chainId !== MONAD_ID) {
+      // ✅ Always try wallet_addEthereumChain directly — it handles both
+      // "add new chain" and "switch to existing chain" in all wallet versions,
+      // avoiding the -32603 / 4902 error ambiguity from wallet_switchEthereumChain.
       try {
         await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: MONAD_HEX }],
+          method: "wallet_addEthereumChain",
+          params: [MONAD_CHAIN_PARAMS],
         });
-      } catch (switchErr) {
-        // 4902 = chain not yet added
-        if (switchErr.code === 4902 || switchErr.code === -32603) {
-          try {
-            await window.ethereum.request({
-              method: "wallet_addEthereumChain",
-              params: [MONAD_CHAIN_PARAMS],
-            });
-          } catch (addErr) {
-            throw new Error("Please add Monad Mainnet to your wallet manually.");
-          }
-        } else {
-          throw switchErr;
+      } catch (addErr) {
+        // User rejected the prompt
+        if (addErr.code === 4001) {
+          throw new Error("Please approve switching to Monad Mainnet in your wallet.");
+        }
+        // Last-resort: try switch (chain may already exist but addEthereumChain failed)
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: MONAD_HEX }],
+          });
+        } catch (switchErr) {
+          throw new Error("Could not switch to Monad Mainnet. Please switch manually.");
         }
       }
       // Re-init provider after chain switch
       provider = new ethers.BrowserProvider(window.ethereum);
     }
 
-    // 5. Get signer & build contract
+    // 4. Get signer & contract
     signer      = await provider.getSigner();
     userAddress = await signer.getAddress();
     contract    = new ethers.Contract(CONTRACT, ABI, signer);
 
-    // 6. UI update
+    // 5. UI
     btn.style.display = "none";
-    const wb = document.getElementById("wbar");
-    wb.classList.add("on");
+    document.getElementById("wbar").classList.add("on");
     document.getElementById("wadr").textContent =
       userAddress.slice(0, 6) + "…" + userAddress.slice(-4);
-
     document.getElementById("dBtn").disabled = false;
     document.getElementById("wBtn").disabled = false;
 
     await refreshStats();
     toast("✓ Connected — Monad Mainnet", "ok");
 
-    // 7. Listen for account/chain changes
+    // 6. React to wallet changes
     window.ethereum.on("accountsChanged", () => location.reload());
     window.ethereum.on("chainChanged",    () => location.reload());
 
@@ -794,19 +516,14 @@ async function connectWallet() {
   }
 }
 
-/* ═══════════════════════════════════════
-   DEPOSIT (Wrap)
-═══════════════════════════════════════ */
+/* ── DEPOSIT (Wrap) ── */
 async function doDeposit() {
   const v = document.getElementById("dAmt").value.trim();
   if (!v || +v <= 0) { toast("Enter a valid amount", "er"); return; }
-
   let amt;
   try { amt = ethers.parseEther(v); } catch (_) { toast("Invalid amount", "er"); return; }
-
   if (amt > monBal) { toast("Insufficient MON balance", "er"); return; }
   if (amt === 0n)   { toast("Amount must be > 0", "er"); return; }
-
   try {
     load("dBtn", true, "Wrapping…");
     const tx = await contract.deposit({ value: amt });
@@ -823,18 +540,13 @@ async function doDeposit() {
   }
 }
 
-/* ═══════════════════════════════════════
-   WITHDRAW (Unwrap)
-═══════════════════════════════════════ */
+/* ── WITHDRAW (Unwrap) ── */
 async function doWithdraw() {
   const v = document.getElementById("wAmt").value.trim();
   if (!v || +v <= 0) { toast("Enter a valid amount", "er"); return; }
-
   let amt;
   try { amt = ethers.parseEther(v); } catch (_) { toast("Invalid amount", "er"); return; }
-
   if (amt > wmonBal) { toast("Insufficient WMON balance", "er"); return; }
-
   try {
     load("wBtn", true, "Unwrapping…");
     const tx = await contract.withdraw(amt);
@@ -851,9 +563,7 @@ async function doWithdraw() {
   }
 }
 
-/* ═══════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════ */
+/* ── HELPERS ── */
 function setMax(tab) {
   if (tab === 0) {
     const gas = ethers.parseEther("0.01");
@@ -886,9 +596,7 @@ function toast(msg, type = "") {
   toastTimer = setTimeout(() => { t.className = "toast"; }, 4000);
 }
 
-/* ═══════════════════════════════════════
-   BOOT
-═══════════════════════════════════════ */
+/* ── BOOT ── */
 startRefresh();
 </script>
 </body>

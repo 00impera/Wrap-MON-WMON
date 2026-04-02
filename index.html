@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMON — Wrapped Monad</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+:root {
+  --bg:#020a04; --surface:rgba(2,18,6,0.9);
+  --border:rgba(0,255,80,0.15); --border-hi:rgba(0,255,80,0.4);
+  --accent:#00ff50; --accent-dim:#00c93c;
+  --glow:rgba(0,255,80,0.22); --glow-hi:rgba(0,255,80,0.45);
+  --text:#d4ffd9; --muted:rgba(0,255,80,0.4);
+  --err:#ff4444; --mono:'Space Mono',monospace; --sans:'Syne',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
+
+/* scanlines */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,80,0.012) 2px,rgba(0,255,80,0.012) 4px);
+}
+/* grid */
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(0,255,80,0.035) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,255,80,0.035) 1px,transparent 1px);
+  background-size:44px 44px;}
+/* radial */
+.radial{position:fixed;top:-25%;left:50%;transform:translateX(-50%);
+  width:750px;height:750px;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(0,255,80,0.07) 0%,transparent 68%);
+  animation:rpulse 6s ease-in-out infinite;}
+@keyframes rpulse{0%,100%{opacity:.6;transform:translateX(-50%) scale(1);}50%{opacity:1;transform:translateX(-50%) scale(1.1);}}
+
+.wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:36px 18px 80px;}
+
+/* ── HEADER ── */
+header{text-align:center;margin-bottom:36px;animation:fd .55s ease both;}
+@keyframes fd{from{opacity:0;transform:translateY(-14px);}to{opacity:1;transform:translateY(0);}}
+.logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:6px;}
+.hex{width:46px;height:46px;border:2px solid var(--accent);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  box-shadow:0 0 18px var(--glow),inset 0 0 18px rgba(0,255,80,0.04);
+  animation:hexflick 5s ease-in-out infinite;}
+@keyframes hexflick{0%,93%,100%{box-shadow:0 0 18px var(--glow),inset 0 0 18px rgba(0,255,80,0.04);}94%{box-shadow:0 0 4px var(--glow);}}
+h1{font-family:var(--mono);font-size:2.2rem;font-weight:700;letter-spacing:.1em;
+  color:var(--accent);text-shadow:0 0 24px var(--glow-hi),0 0 48px var(--glow);}
+.sub{font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;margin-top:6px;}
+
+/* ── LIVE STATS ── */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;animation:fu .5s .08s ease both;}
+@keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;
+  backdrop-filter:blur(14px);position:relative;overflow:hidden;}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.45;}
+.slabel{font-family:var(--mono);font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;}
+.sval{font-family:var(--mono);font-size:1.05rem;font-weight:700;color:var(--accent);
+  text-shadow:0 0 10px var(--glow);}
+.sval .unit{font-size:.62rem;color:var(--muted);margin-left:3px;}
+.pulse-dot{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 8px var(--accent);
+  margin-right:5px;animation:blink 1.4s ease-in-out infinite;vertical-align:middle;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.refresh-time{font-family:var(--mono);font-size:.55rem;color:var(--muted);text-align:right;
+  margin-bottom:14px;letter-spacing:.05em;}
+
+/* ── CONNECT ── */
+.cbtn{width:100%;padding:14px;background:transparent;border:1px solid var(--accent);
+  border-radius:12px;color:var(--accent);font-family:var(--mono);font-size:.82rem;
+  font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;
+  margin-bottom:18px;transition:all .2s;
+  box-shadow:0 0 14px var(--glow),inset 0 0 14px rgba(0,255,80,.03);
+  animation:fu .5s .18s ease both;}
+.cbtn:hover{background:rgba(0,255,80,.08);box-shadow:0 0 26px var(--glow-hi);transform:translateY(-1px);}
+.cbtn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+
+/* wallet bar */
+.wbar{background:var(--surface);border:1px solid var(--border);border-radius:11px;
+  padding:12px 16px;margin-bottom:18px;display:none;align-items:center;
+  justify-content:space-between;backdrop-filter:blur(14px);}
+.wbar.on{display:flex;}
+.wadr{font-family:var(--mono);font-size:.76rem;color:var(--accent);}
+.wbal{font-family:var(--mono);font-size:.72rem;color:var(--muted);}
+
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;backdrop-filter:blur(18px);
+  box-shadow:0 0 48px rgba(0,255,80,.04),0 24px 48px rgba(0,0,0,.65);
+  animation:fu .5s .26s ease both;}
+.tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.tab{padding:15px;text-align:center;font-family:var(--mono);font-size:.76rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:var(--muted);
+  transition:all .2s;border:none;background:none;position:relative;}
+.tab.on{color:var(--accent);background:rgba(0,255,80,.04);text-shadow:0 0 8px var(--glow);}
+.tab.on::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:var(--accent);box-shadow:0 0 6px var(--glow);}
+.fbody{padding:22px;}
+
+/* balance chip */
+.bchip{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;padding:11px 13px;
+  background:rgba(0,255,80,.03);border:1px solid var(--border);border-radius:8px;}
+.bchip .lbl{font-family:var(--mono);font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.bchip .val{font-family:var(--mono);font-size:.8rem;color:var(--accent);}
+
+/* input */
+.ilabel{font-family:var(--mono);font-size:.58rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px;display:block;}
+.irow{display:flex;align-items:center;background:rgba(0,0,0,.55);
+  border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  margin-bottom:14px;transition:border-color .2s,box-shadow .2s;}
+.irow:focus-within{border-color:var(--accent);box-shadow:0 0 14px var(--glow);}
+.ainput{flex:1;background:none;border:none;outline:none;padding:14px 15px;
+  font-family:var(--mono);font-size:1rem;color:var(--accent);caret-color:var(--accent);}
+.ainput::placeholder{color:rgba(0,255,80,.18);}
+.maxbtn{background:none;border:none;color:var(--accent);font-family:var(--mono);
+  font-size:.62rem;cursor:pointer;padding:3px 9px;border-radius:4px;
+  transition:background .2s;text-transform:uppercase;letter-spacing:.06em;}
+.maxbtn:hover{background:rgba(0,255,80,.12);}
+.ibadge{padding:7px 13px;font-family:var(--mono);font-size:.72rem;
+  color:var(--muted);border-left:1px solid var(--border);}
+
+/* action btn */
+.abtn{width:100%;padding:15px;background:transparent;border:1px solid var(--accent);
+  border-radius:10px;color:var(--accent);font-family:var(--mono);font-size:.82rem;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .2s;box-shadow:0 0 12px var(--glow),inset 0 0 12px rgba(0,255,80,.02);}
+.abtn:hover:not(:disabled){background:rgba(0,255,80,.09);
+  box-shadow:0 0 26px var(--glow-hi);transform:translateY(-1px);}
+.abtn:disabled{opacity:.28;cursor:not-allowed;box-shadow:none;}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(70px);
+  background:rgba(0,10,3,.97);border:1px solid var(--border);border-radius:9px;
+  padding:11px 20px;font-family:var(--mono);font-size:.73rem;color:var(--text);
+  z-index:10000;transition:transform .28s cubic-bezier(.34,1.56,.64,1);
+  max-width:88vw;text-align:center;backdrop-filter:blur(16px);}
+.toast.on{transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--accent);color:var(--accent);box-shadow:0 0 18px var(--glow);}
+.toast.er{border-color:var(--err);color:var(--err);}
+
+footer{text-align:center;margin-top:26px;font-family:var(--mono);font-size:.58rem;
+  color:var(--muted);line-height:2.1;animation:fu .5s .34s ease both;}
+footer a{color:var(--accent);text-decoration:none;}
+footer a:hover{text-shadow:0 0 8px var(--glow);}
+
+.spin{display:inline-block;width:11px;height:11px;border:2px solid rgba(0,255,80,.2);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:sp .65s linear infinite;vertical-align:middle;margin-right:7px;}
+@keyframes sp{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="radial"></div>
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <div class="hex">⬡</div>
+      <h1>WMON</h1>
+    </div>
+    <p class="sub">Wrapped Monad &nbsp;·&nbsp; Mainnet</p>
+  </header>
+
+  <!-- LIVE STATS -->
+  <div class="stats">
+    <div class="scard">
+      <div class="slabel"><span class="pulse-dot"></span>Total Supply</div>
+      <div class="sval" id="statSupply">Loading…<span class="unit"></span></div>
+    </div>
+    <div class="scard">
+      <div class="slabel"><span class="pulse-dot"></span>Your WMON</div>
+      <div class="sval" id="statUser">—<span class="unit">WMON</span></div>
+    </div>
+  </div>
+  <div class="refresh-time" id="lastUpdate">Fetching live data…</div>
+
+  <button class="cbtn" id="cbtn" onclick="connectWallet()">[ Connect Wallet ]</button>
+
+  <div class="wbar" id="wbar">
+    <div style="display:flex;align-items:center;gap:9px;">
+      <span class="pulse-dot"></span>
+      <span class="wadr" id="wadr">—</span>
+    </div>
+    <span class="wbal" id="wbal">— MON</span>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab on" id="t0" onclick="switchTab(0)">↓ Wrap MON</button>
+      <button class="tab"    id="t1" onclick="switchTab(1)">↑ Unwrap WMON</button>
+    </div>
+    <div class="fbody">
+
+      <div id="p0">
+        <div class="bchip">
+          <span class="lbl">MON Balance</span>
+          <span class="val" id="monBal">—</span>
+        </div>
+        <label class="ilabel">Amount to wrap</label>
+        <div class="irow">
+          <input class="ainput" id="dAmt" type="number" placeholder="0.00" min="0" step="any"/>
+          <button class="maxbtn" onclick="setMax(0)">MAX</button>
+          <div class="ibadge">MON</div>
+        </div>
+        <button class="abtn" id="dBtn" onclick="doDeposit()" disabled>Wrap MON → WMON</button>
+      </div>
+
+      <div id="p1" style="display:none">
+        <div class="bchip">
+          <span class="lbl">WMON Balance</span>
+          <span class="val" id="wmonBal">—</span>
+        </div>
+        <label class="ilabel">Amount to unwrap</label>
+        <div class="irow">
+          <input class="ainput" id="wAmt" type="number" placeholder="0.00" min="0" step="any"/>
+          <button class="maxbtn" onclick="setMax(1)">MAX</button>
+          <div class="ibadge">WMON</div>
+        </div>
+        <button class="abtn" id="wBtn" onclick="doWithdraw()" disabled>Unwrap WMON → MON</button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    Contract: <a href="https://monadscan.com/address/0x2cE8C8F4961a54B2e87585f4178467006B76B418" target="_blank">0x2cE8...B418</a>
+    &nbsp;·&nbsp; Chain ID 143 &nbsp;·&nbsp; ~0.5s blocks
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const CONTRACT = "0x2cE8C8F4961a54B2e87585f4178467006B76B418";
+const ABI = [
+  "function deposit() payable",
+  "function withdraw(uint256 wad)",
+  "function balanceOf(address) view returns (uint256)",
+  "function totalSupply() view returns (uint256)",
+];
+// Multiple RPCs tried in order for public reads
+const READ_RPCS = [
+  "https://monad-mainnet.drpc.org",
+  "https://monad-mainnet.g.alchemy.com/v2/demo",  // fallback
+];
+const MONAD_ID  = 143n;
+const MONAD_HEX = "0x8f";
+const REFRESH_MS = 8000; // 8 second live refresh
+
+// ─── STATE ────────────────────────────────────────────────
+let provider, signer, contract, userAddress;
+let monBal = 0n, wmonBal = 0n;
+let refreshTimer = null;
+
+// ─── MULTI-RPC RAW CALL ──────────────────────────────────
+// For total supply we use eth_getBalance (= contract ETH = totalSupply for WMON)
+// This bypasses eth_call restrictions on free RPCs
+async function fetchTotalSupply() {
+  for (const rpc of READ_RPCS) {
+    try {
+      const res = await fetch(rpc, {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({jsonrpc:"2.0",method:"eth_getBalance",
+          params:[CONTRACT,"latest"],id:1}),
+        signal: AbortSignal.timeout(4000)
+      });
+      const d = await res.json();
+      if (d.result) return BigInt(d.result);
+    } catch(_) {}
+  }
+  return null;
+}
+
+// For user balanceOf we use the connected wallet's provider (no restriction)
+async function fetchUserBalance() {
+  if (!contract || !userAddress) return null;
+  try { return await contract.balanceOf(userAddress); }
+  catch(_) { return null; }
+}
+
+// ─── LIVE REFRESH LOOP ───────────────────────────────────
+async function refreshStats() {
+  const supply = await fetchTotalSupply();
+  const supplyEl = document.getElementById("statSupply");
+  if (supply !== null) {
+    const fmt = parseFloat(ethers.formatEther(supply)).toFixed(4);
+    supplyEl.innerHTML = fmt + '<span class="unit"> WMON</span>';
+  } else {
+    supplyEl.innerHTML = 'RPC err<span class="unit"></span>';
+  }
+
+  if (userAddress) {
+    // refresh MON balance
+    try {
+      monBal = await provider.getBalance(userAddress);
+      const mf = parseFloat(ethers.formatEther(monBal)).toFixed(4);
+      document.getElementById("wbal").textContent   = mf + " MON";
+      document.getElementById("monBal").textContent = mf + " MON";
+    } catch(_) {}
+
+    // refresh WMON balance
+    const ub = await fetchUserBalance();
+    if (ub !== null) {
+      wmonBal = ub;
+      const wf = parseFloat(ethers.formatEther(wmonBal)).toFixed(4);
+      document.getElementById("wmonBal").textContent = wf + " WMON";
+      document.getElementById("statUser").innerHTML  = wf + '<span class="unit"> WMON</span>';
+    }
+  }
+
+  const now = new Date();
+  document.getElementById("lastUpdate").textContent =
+    `Last updated: ${now.toLocaleTimeString()} · auto-refresh every ${REFRESH_MS/1000}s`;
+}
+
+function startRefresh() {
+  refreshStats();
+  clearInterval(refreshTimer);
+  refreshTimer = setInterval(refreshStats, REFRESH_MS);
+}
+
+// ─── WALLET ──────────────────────────────────────────────
+async function connectWallet() {
+  if (!window.ethereum) { toast("Install MetaMask first","er"); return; }
+  const btn = document.getElementById("cbtn");
+  try {
+    btn.innerHTML = '<span class="spin"></span>Connecting...';
+    btn.disabled = true;
+
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts",[]);
+
+    // switch network if needed
+    const net = await provider.getNetwork();
+    if (net.chainId !== MONAD_ID) {
+      try {
+        await window.ethereum.request({method:"wallet_switchEthereumChain",
+          params:[{chainId:MONAD_HEX}]});
+      } catch(e) {
+        if (e.code === 4902) {
+          await window.ethereum.request({method:"wallet_addEthereumChain",
+            params:[{chainId:MONAD_HEX,chainName:"Monad Mainnet",
+              nativeCurrency:{name:"MON",symbol:"MON",decimals:18},
+              rpcUrls:["https://monad-mainnet.drpc.org"],
+              blockExplorerUrls:["https://monadscan.com"]}]});
+        } else throw e;
+      }
+      provider = new ethers.BrowserProvider(window.ethereum);
+    }
+
+    signer      = await provider.getSigner();
+    userAddress = await signer.getAddress();
+    contract    = new ethers.Contract(CONTRACT, ABI, signer);
+
+    btn.style.display = "none";
+    const wb = document.getElementById("wbar");
+    wb.classList.add("on");
+    document.getElementById("wadr").textContent =
+      userAddress.slice(0,6)+"…"+userAddress.slice(-4);
+
+    document.getElementById("dBtn").disabled = false;
+    document.getElementById("wBtn").disabled = false;
+
+    await refreshStats(); // immediate refresh with user data
+    toast("✓ Connected to Monad Mainnet","ok");
+
+    window.ethereum.on("accountsChanged",()=>location.reload());
+    window.ethereum.on("chainChanged",()=>location.reload());
+  } catch(e) {
+    toast(e.message||"Connection failed","er");
+    btn.innerHTML="[ Connect Wallet ]";
+    btn.disabled=false;
+  }
+}
+
+// ─── DEPOSIT ─────────────────────────────────────────────
+async function doDeposit() {
+  const v = document.getElementById("dAmt").value;
+  if (!v||+v<=0){toast("Enter an amount","er");return;}
+  const amt = ethers.parseEther(v);
+  if (amt>monBal){toast("Insufficient MON balance","er");return;}
+  try {
+    load("dBtn",true,"Wrapping...");
+    const tx = await contract.deposit({value:amt});
+    toast("Tx sent — confirming…");
+    await tx.wait();
+    document.getElementById("dAmt").value="";
+    await refreshStats();
+    toast("✓ Wrapped successfully!","ok");
+  } catch(e){toast(e.shortMessage||e.message||"Failed","er");}
+  finally{load("dBtn",false,"Wrap MON → WMON");}
+}
+
+// ─── WITHDRAW ────────────────────────────────────────────
+async function doWithdraw() {
+  const v = document.getElementById("wAmt").value;
+  if (!v||+v<=0){toast("Enter an amount","er");return;}
+  const amt = ethers.parseEther(v);
+  if (amt>wmonBal){toast("Insufficient WMON balance","er");return;}
+  try {
+    load("wBtn",true,"Unwrapping...");
+    const tx = await contract.withdraw(amt);
+    toast("Tx sent — confirming…");
+    await tx.wait();
+    document.getElementById("wAmt").value="";
+    await refreshStats();
+    toast("✓ Unwrapped successfully!","ok");
+  } catch(e){toast(e.shortMessage||e.message||"Failed","er");}
+  finally{load("wBtn",false,"Unwrap WMON → MON");}
+}
+
+// ─── HELPERS ─────────────────────────────────────────────
+function setMax(tab) {
+  if (tab===0) {
+    const gas=ethers.parseEther("0.01");
+    document.getElementById("dAmt").value=
+      ethers.formatEther(monBal>gas?monBal-gas:0n);
+  } else {
+    document.getElementById("wAmt").value=ethers.formatEther(wmonBal);
+  }
+}
+
+function switchTab(i) {
+  document.getElementById("p0").style.display = i===0?"block":"none";
+  document.getElementById("p1").style.display = i===1?"block":"none";
+  document.getElementById("t0").classList.toggle("on",i===0);
+  document.getElementById("t1").classList.toggle("on",i===1);
+}
+
+function load(id,on,label){
+  const b=document.getElementById(id);
+  b.disabled=on;
+  b.innerHTML=on?`<span class="spin"></span>${label}`:label;
+}
+
+function toast(msg,type=""){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.className="toast on "+(type||"");
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>{t.className="toast";},3800);
+}
+
+// ─── BOOT ────────────────────────────────────────────────
+startRefresh();
+</script>
+</body>
+</html>

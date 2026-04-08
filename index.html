@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WMON — Wrapped Monad</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
 :root {
@@ -61,22 +60,15 @@ body::before{
 header{text-align:center;margin-bottom:36px;animation:fd .55s ease both;}
 @keyframes fd{from{opacity:0;transform:translateY(-14px);}to{opacity:1;transform:translateY(0);}}
 .logo{display:inline-flex;align-items:center;gap:14px;margin-bottom:8px;}
-
-/* ── LOGO IMAGE — SMALL ── */
 .hex{
   width:38px;height:38px;border:2px solid var(--accent);border-radius:10px;
   display:flex;align-items:center;justify-content:center;font-size:20px;
   background:rgba(0,255,80,0.04);
   box-shadow:0 0 16px var(--glow),0 0 4px var(--glow),inset 0 0 14px rgba(0,255,80,0.04);
   animation:hexflick 5s ease-in-out infinite;
-  overflow:hidden;
-  padding:0;
-  flex-shrink:0;
+  overflow:hidden;padding:0;flex-shrink:0;
 }
-.hex img{
-  width:100%;height:100%;object-fit:cover;border-radius:8px;
-  display:block;
-}
+.hex img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;}
 @keyframes hexflick{
   0%,91%,100%{box-shadow:0 0 16px var(--glow),inset 0 0 14px rgba(0,255,80,0.04);}
   92%{box-shadow:0 0 4px var(--glow);}93%{box-shadow:0 0 16px var(--glow),inset 0 0 14px rgba(0,255,80,0.04);}
@@ -113,17 +105,65 @@ h1{
 .scard:nth-child(2) .pulse-dot{background:var(--accent2);box-shadow:0 0 8px var(--accent2);}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.15;}}
 .refresh-time{font-family:var(--mono);font-size:.54rem;color:var(--muted);text-align:right;margin-bottom:14px;letter-spacing:.04em;opacity:.7;}
-.cbtn{
-  width:100%;padding:15px;background:transparent;border:1px solid var(--accent);border-radius:13px;
-  color:var(--accent);font-family:var(--mono);font-size:.8rem;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;margin-bottom:18px;
-  transition:all .22s;box-shadow:0 0 16px var(--glow),inset 0 0 16px rgba(0,255,80,.025);
-  animation:fu .5s .18s ease both;position:relative;overflow:hidden;
+
+/* ── CONNECT WALLET BUTTON — REDESIGNED ── */
+.cbtn-wrap{
+  margin-bottom:18px;
+  animation:fu .5s .18s ease both;
 }
-.cbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,80,.07) 0%,rgba(0,232,255,.04) 100%);opacity:0;transition:opacity .2s;}
-.cbtn:hover::after{opacity:1;}
-.cbtn:hover{box-shadow:0 0 30px var(--glow-hi);transform:translateY(-1px);}
-.cbtn:disabled{opacity:.32;cursor:not-allowed;transform:none;}
+.cbtn{
+  width:100%;padding:18px 24px;
+  background:linear-gradient(135deg,rgba(0,255,80,0.15) 0%,rgba(0,232,255,0.08) 100%);
+  border:1.5px solid var(--accent);
+  border-radius:14px;
+  color:#fff;
+  font-family:var(--mono);font-size:.88rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;cursor:pointer;
+  transition:all .22s;
+  box-shadow:0 0 28px rgba(0,255,80,0.3),0 0 60px rgba(0,255,80,0.1),inset 0 1px 0 rgba(255,255,255,0.08);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.cbtn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,255,80,0.12),transparent);
+  transform:translateX(-100%);
+  animation:cbtnsweep 2.5s ease-in-out infinite;
+}
+@keyframes cbtnsweep{
+  0%{transform:translateX(-100%);}
+  60%,100%{transform:translateX(100%);}
+}
+.cbtn:hover{
+  background:linear-gradient(135deg,rgba(0,255,80,0.28) 0%,rgba(0,232,255,0.14) 100%);
+  box-shadow:0 0 40px rgba(0,255,80,0.5),0 0 80px rgba(0,255,80,0.2),inset 0 1px 0 rgba(255,255,255,0.1);
+  transform:translateY(-2px);
+  border-color:#00ff80;
+}
+.cbtn:active{transform:translateY(0);}
+.cbtn:disabled{
+  opacity:.35;cursor:not-allowed;transform:none;
+  animation:none;
+  box-shadow:0 0 10px rgba(0,255,80,0.1);
+}
+.cbtn:disabled::before{animation:none;}
+.cbtn-icon{
+  width:20px;height:20px;border:2px solid rgba(0,255,80,0.7);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:rgba(0,255,80,0.08);
+  box-shadow:0 0 8px rgba(0,255,80,0.3);
+}
+.cbtn-icon svg{width:11px;height:11px;fill:var(--accent);}
+.cbtn-text{
+  background:linear-gradient(90deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 8px rgba(0,255,80,0.6));
+  font-size:.88rem;letter-spacing:.18em;
+}
+.cbtn-arrow{color:var(--accent2);font-size:1rem;animation:arrowpulse 1.4s ease-in-out infinite;-webkit-text-fill-color:initial;}
+@keyframes arrowpulse{0%,100%{transform:translateX(0);opacity:1;}50%{transform:translateX(4px);opacity:.6;}}
+/* ── end connect btn ── */
+
 .wbar{
   background:var(--surface2);border:1px solid rgba(0,232,255,0.2);border-radius:12px;
   padding:11px 16px;margin-bottom:18px;display:none;
@@ -179,8 +219,6 @@ h1{
 .abtn:hover:not(:disabled)::before{transform:translateX(100%);}
 .abtn:hover:not(:disabled){background:rgba(0,255,80,.07);box-shadow:0 0 28px var(--glow-hi);transform:translateY(-1px);}
 .abtn:disabled{opacity:.25;cursor:not-allowed;box-shadow:none;}
-.divider{display:flex;align-items:center;gap:10px;margin:16px 0;font-family:var(--mono);font-size:.55rem;color:var(--muted);letter-spacing:.1em;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
 .rate-row{
   display:flex;justify-content:center;align-items:center;gap:8px;padding:9px 14px;
   background:rgba(0,255,80,.025);border:1px solid var(--border);border-radius:8px;
@@ -198,18 +236,10 @@ h1{
 .toast.ok{border-color:var(--accent);color:var(--accent);box-shadow:0 0 22px var(--glow);}
 .toast.er{border-color:var(--err);color:var(--err);box-shadow:0 0 22px rgba(255,68,102,.3);}
 .toast.wa{border-color:var(--warn);color:var(--warn);}
-
-/* ── FOOTER ── */
 footer{text-align:center;margin-top:28px;font-family:var(--mono);font-size:.57rem;color:var(--muted);line-height:2.2;animation:fu .5s .34s ease both;}
 footer a{color:var(--accent2);text-decoration:none;}
 footer a:hover{text-shadow:0 0 8px var(--glow2);}
-
-/* ── SOCIAL BADGES — MODERN ── */
-.social-section{
-  margin-top:22px;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  animation:fu .5s .4s ease both;
-}
+.social-section{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:10px;animation:fu .5s .4s ease both;}
 .social-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
 .badge-link{
   display:inline-flex;align-items:center;gap:8px;
@@ -221,75 +251,29 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
 .badge-link::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;background:linear-gradient(135deg,rgba(255,255,255,0.06),transparent);}
 .badge-link:hover::before{opacity:1;}
 .badge-link:hover{transform:translateY(-2px);}
-
-/* X/Twitter — clean black */
-.badge-tw{
-  background:rgba(0,0,0,0.75);border-color:rgba(255,255,255,0.18);color:#e7e7e7;
-  box-shadow:0 0 14px rgba(0,0,0,0.5);
-}
+.badge-tw{background:rgba(0,0,0,0.75);border-color:rgba(255,255,255,0.18);color:#e7e7e7;box-shadow:0 0 14px rgba(0,0,0,0.5);}
 .badge-tw:hover{border-color:rgba(255,255,255,0.5);box-shadow:0 0 22px rgba(255,255,255,0.12);}
-
-/* Discord — blurple */
-.badge-dc{
-  background:rgba(88,101,242,0.14);border-color:rgba(88,101,242,0.45);color:#b8beff;
-  box-shadow:0 0 12px rgba(88,101,242,0.1);
-}
+.badge-dc{background:rgba(88,101,242,0.14);border-color:rgba(88,101,242,0.45);color:#b8beff;box-shadow:0 0 12px rgba(88,101,242,0.1);}
 .badge-dc:hover{border-color:rgba(88,101,242,0.9);box-shadow:0 0 24px rgba(88,101,242,0.35);}
-
-/* SVG icon wrapper */
 .badge-svg{width:15px;height:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 .badge-svg svg{width:100%;height:100%;}
-
-/* ── DONATE SECTION — FIXED ── */
-.donate-section{
-  margin-top:18px;
-  animation:fu .5s .46s ease both;
-}
+.donate-section{margin-top:18px;animation:fu .5s .46s ease both;}
 .donate-btn{
   display:flex;align-items:center;justify-content:center;gap:10px;
   width:100%;padding:14px 20px;
-  background:rgba(0,255,80,0.04);
-  border:1px solid rgba(0,255,80,0.3);border-radius:11px;
+  background:rgba(0,255,80,0.04);border:1px solid rgba(0,255,80,0.3);border-radius:11px;
   font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--accent);text-decoration:none;
-  transition:all .22s;
-  box-shadow:0 0 16px rgba(0,255,80,0.06);
-  position:relative;overflow:hidden;
-  cursor:pointer;
+  color:var(--accent);text-decoration:none;transition:all .22s;
+  box-shadow:0 0 16px rgba(0,255,80,0.06);position:relative;overflow:hidden;cursor:pointer;
 }
-.donate-btn::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(0,255,80,0.08),transparent);
-  transform:translateX(-100%);transition:transform .5s;
-}
+.donate-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,255,80,0.08),transparent);transform:translateX(-100%);transition:transform .5s;}
 .donate-btn:hover::before{transform:translateX(100%);}
-.donate-btn:hover{
-  background:rgba(0,255,80,0.09);
-  border-color:var(--accent);
-  box-shadow:0 0 30px var(--glow);
-  transform:translateY(-1px);
-}
-.donate-logo{
-  width:20px;height:20px;border-radius:5px;object-fit:cover;
-  border:1px solid rgba(0,255,80,0.35);flex-shrink:0;
-}
-.donate-label{display:flex;align-items:center;gap:6px;}
-/* Fixed pointing hand — static unicode, no animation drift */
-.donate-hand{
-  font-size:1rem;
-  display:inline-block;
-  transform:rotate(0deg);
-  /* subtle pulse instead of horizontal drift */
-  animation:handpulse 1.6s ease-in-out infinite;
-}
+.donate-btn:hover{background:rgba(0,255,80,0.09);border-color:var(--accent);box-shadow:0 0 30px var(--glow);transform:translateY(-1px);}
+.donate-logo{width:20px;height:20px;border-radius:5px;object-fit:cover;border:1px solid rgba(0,255,80,0.35);flex-shrink:0;}
+.donate-hand{font-size:1rem;display:inline-block;animation:handpulse 1.6s ease-in-out infinite;}
 @keyframes handpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
-
-.donate-arrow{
-  font-size:.9rem;margin-left:2px;opacity:.7;
-  animation:darrow 1.2s ease-in-out infinite;
-}
+.donate-arrow{font-size:.9rem;margin-left:2px;opacity:.7;animation:darrow 1.2s ease-in-out infinite;}
 @keyframes darrow{0%,100%{transform:translateX(0);}50%{transform:translateX(4px);}}
-
 .spin{display:inline-block;width:11px;height:11px;border:2px solid rgba(0,255,80,.15);border-top-color:var(--accent);border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:7px;}
 @keyframes sp{to{transform:rotate(360deg);}}
 .hint{font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:10px;text-align:center;letter-spacing:.04em;opacity:.65;}
@@ -305,13 +289,8 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
 <div class="wrap">
   <header>
     <div class="logo">
-      <!-- Small logo — 38×38 -->
       <div class="hex">
-        <img
-          src="https://raw.githubusercontent.com/00impera/Wrap-MON-WMON/Telegram8/logo.png"
-          alt="WMON Logo"
-          onerror="this.parentElement.innerHTML='⬡';"
-        />
+        <img src="https://raw.githubusercontent.com/00impera/Wrap-MON-WMON/Telegram8/logo.png" alt="WMON Logo" onerror="this.parentElement.innerHTML='⬡';"/>
       </div>
       <h1>WMON</h1>
     </div>
@@ -334,7 +313,18 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
   </div>
   <div class="refresh-time" id="lastUpdate">Fetching live data…</div>
 
-  <button class="cbtn" id="cbtn" onclick="connectWallet()">[ Connect Wallet ]</button>
+  <!-- ── CONNECT WALLET — REDESIGNED ── -->
+  <div class="cbtn-wrap" id="cbtn-wrap">
+    <button class="cbtn" id="cbtn" onclick="connectWallet()">
+      <span class="cbtn-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 18v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1h-9a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+        </svg>
+      </span>
+      <span class="cbtn-text">Connect Wallet</span>
+      <span class="cbtn-arrow">→</span>
+    </button>
+  </div>
 
   <div class="wbar" id="wbar">
     <div style="display:flex;align-items:center;gap:9px;">
@@ -393,31 +383,20 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
     </div>
   </div>
 
-  <!-- ── DONATE — fixed hand emoji ── -->
   <div class="donate-section">
     <a class="donate-btn"
        href="https://monadvision.com/token/0x2cE8C8F4961a54B2e87585f4178467006B76B418?tab=Contract"
        target="_blank" rel="noopener">
       <span class="donate-hand">👉⛽👈</span>
-      <img
-        class="donate-logo"
-        src="https://raw.githubusercontent.com/00impera/Wrap-MON-WMON/Telegram8/logo.png"
-        alt="WMON"
-        onerror="this.style.display='none';"
-      />
-      <span class="donate-label">Donate · View Contract</span>
+      <img class="donate-logo" src="https://raw.githubusercontent.com/00impera/Wrap-MON-WMON/Telegram8/logo.png" alt="WMON" onerror="this.style.display='none';"/>
+      <span>Donate · View Contract</span>
       <span class="donate-arrow">→</span>
     </a>
   </div>
 
-  <!-- ── SOCIAL BADGES — modern SVG icons ── -->
   <div class="social-section">
     <div class="social-row">
-
-      <!-- X / Twitter with real X logo -->
-      <a class="badge-link badge-tw"
-         href="https://x.com/bnbgold277983"
-         target="_blank" rel="noopener">
+      <a class="badge-link badge-tw" href="https://x.com/bnbgold277983" target="_blank" rel="noopener">
         <span class="badge-svg">
           <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.258 5.626L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
@@ -425,11 +404,7 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
         </span>
         @bnbgold277983
       </a>
-
-      <!-- Discord with real Discord logo -->
-      <a class="badge-link badge-dc"
-         href="https://discord.com/channels/1316093079090106472"
-         target="_blank" rel="noopener">
+      <a class="badge-link badge-dc" href="https://discord.com/channels/1316093079090106472" target="_blank" rel="noopener">
         <span class="badge-svg">
           <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.054a19.882 19.882 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
@@ -437,7 +412,6 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
         </span>
         Join Server
       </a>
-
     </div>
   </div>
 
@@ -449,6 +423,9 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- Load ethers BEFORE any script that uses it -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+
 <script>
 /* ── DIGITAL RAIN ── */
 (function initRain() {
@@ -458,7 +435,6 @@ footer a:hover{text-shadow:0 0 8px var(--glow2);}
   const FONT_SIZE = 13;
   let cols, drops;
   const COLORS = ['#00ff50','#00ff50','#00ff50','#00e8ff','#aaff00','#00ff50'];
-
   function resize() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -592,49 +568,56 @@ function startRefresh() {
   refreshTimer = setInterval(refreshStats, REFRESH_MS);
 }
 
-/* ── WALLET CONNECTION ── */
+/* ── WALLET CONNECTION — fixed for SES environments ── */
 async function connectWallet() {
-  if (!window.ethereum) {
-    toast("MetaMask not detected — please install it first", "er");
+  /* Check for injected provider — works with SES lockdown */
+  const eth = window.ethereum;
+  if (!eth) {
+    toast("No wallet detected — install MetaMask or Rabby", "er");
     return;
   }
 
   const btn = document.getElementById("cbtn");
-  btn.innerHTML = '<span class="spin"></span>Connecting…';
+  btn.innerHTML = '<span class="spin"></span><span class="cbtn-text">Connecting…</span>';
   btn.disabled  = true;
 
   try {
-    await window.ethereum.request({ method: "eth_requestAccounts" });
-    provider = new ethers.BrowserProvider(window.ethereum);
+    /* Request accounts */
+    await eth.request({ method: "eth_requestAccounts" });
+
+    /* Build provider AFTER accounts granted */
+    provider = new ethers.BrowserProvider(eth);
     const net = await provider.getNetwork();
 
     if (net.chainId !== MONAD_ID) {
       try {
-        await window.ethereum.request({
+        await eth.request({
           method: "wallet_addEthereumChain",
           params: [MONAD_CHAIN_PARAMS],
         });
       } catch (addErr) {
         if (addErr.code === 4001) {
-          throw new Error("Please approve switching to Monad Mainnet in your wallet.");
+          throw new Error("Please approve switching to Monad Mainnet.");
         }
         try {
-          await window.ethereum.request({
+          await eth.request({
             method: "wallet_switchEthereumChain",
             params: [{ chainId: MONAD_HEX }],
           });
-        } catch (switchErr) {
-          throw new Error("Could not switch to Monad Mainnet. Please switch manually.");
+        } catch (_) {
+          throw new Error("Could not switch to Monad Mainnet — please switch manually.");
         }
       }
-      provider = new ethers.BrowserProvider(window.ethereum);
+      /* Re-init provider after chain switch */
+      provider = new ethers.BrowserProvider(eth);
     }
 
     signer      = await provider.getSigner();
     userAddress = await signer.getAddress();
     contract    = new ethers.Contract(CONTRACT, ABI, signer);
 
-    btn.style.display = "none";
+    /* Hide connect button, show wallet bar */
+    document.getElementById("cbtn-wrap").style.display = "none";
     document.getElementById("wbar").classList.add("on");
     document.getElementById("wadr").textContent =
       userAddress.slice(0, 6) + "…" + userAddress.slice(-4);
@@ -644,14 +627,22 @@ async function connectWallet() {
     await refreshStats();
     toast("✓ Connected — Monad Mainnet", "ok");
 
-    window.ethereum.on("accountsChanged", () => location.reload());
-    window.ethereum.on("chainChanged",    () => location.reload());
+    eth.on("accountsChanged", () => location.reload());
+    eth.on("chainChanged",    () => location.reload());
 
   } catch (e) {
     const msg = e?.message || "Connection failed";
     toast(msg.length > 80 ? msg.slice(0, 77) + "…" : msg, "er");
-    btn.innerHTML = "[ Connect Wallet ]";
-    btn.disabled  = false;
+    /* Restore button */
+    btn.innerHTML = `
+      <span class="cbtn-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 18v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1h-9a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+        </svg>
+      </span>
+      <span class="cbtn-text">Connect Wallet</span>
+      <span class="cbtn-arrow">→</span>`;
+    btn.disabled = false;
   }
 }
 
